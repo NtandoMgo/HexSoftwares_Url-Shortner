@@ -28,12 +28,26 @@ public class UrlService {
         return urlRepository.findByShortUrl(shortUrl);
     }
 
+    // private String generateShortUrl() {
+    //     Random random = new Random();
+    //     StringBuilder sb = new StringBuilder();
+    //     for (int i = 0; i < 6; i++) {
+    //         sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+    //     }
+    //     return sb.toString();
+    // }
+
     private String generateShortUrl() {
         Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
-            sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
-        }
-        return sb.toString();
+        String shortUrl;
+        do {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 6; i++) {
+                sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+            }
+            shortUrl = sb.toString();
+        } while (urlRepository.findByShortUrl(shortUrl).isPresent()); // Retry if short URL exists
+    
+        return shortUrl;
     }
 }
