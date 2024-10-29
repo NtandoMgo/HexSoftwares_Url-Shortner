@@ -41,21 +41,30 @@
   <script>
     const form = document.querySelector("#shortenForm");
     form.onsubmit = async (e) => {
-      e.preventDefault();
-      const originalUrl = document.getElementById("originalUrl").value;
+  e.preventDefault();
+  const originalUrl = document.getElementById("originalUrl").value;
 
-      const response = await fetch(`${window.location.origin}/api/shorten-url`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ originalUrl: originalUrl }),
-      });
+  try {
+    const response = await fetch(`${window.location.origin}/api/shorten-url`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ originalUrl: originalUrl }),
+    });
 
-      const shortUrl = await response.text();
-      document.getElementById("shortUrl").href = `${window.location.origin}/${shortUrl}`;
-      document.getElementById("shortUrl").textContent = `${window.location.origin}/${shortUrl}`;
-    };
+    if (!response.ok) {
+      throw new Error('Failed to shorten URL');
+    }
+
+    const shortUrl = await response.text();
+    document.getElementById("shortUrl").href = `${window.location.origin}/api/${shortUrl}`;
+    document.getElementById("shortUrl").textContent = `${window.location.origin}/api/${shortUrl}`;
+  } catch (error) {
+    console.error(error);
+    alert('An error occurred while shortening the URL.');
+  }
+};
   </script>
 </body>
 </html>
